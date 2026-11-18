@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlanGUARD — Constraint-Aware Hackathon Planning Agent</title>
+    <meta
+      name="description"
+      content="Constraint-aware incremental hackathon event-planning agent system with conflict resolution, deterministic validation, and audited model-call tracing."
+    />
+    <meta property="og:title" content="PlanGUARD — Constraint-Aware Hackathon Planning Agent" />
+    <meta
+      property="og:description"
+      content="Constraint-aware incremental hackathon event-planning agent system with conflict resolution, deterministic validation, and audited model-call tracing."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand-wordmark">PlanGUARD</span>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Primary sections">
+          <button class="nav-item active" data-section="overview" type="button">Overview</button>
+          <button class="nav-item" data-section="messages" type="button">
+            <span>Message Pack</span>
+            <span class="nav-count tabular-nums" id="nav-count-messages">0</span>
+          </button>
+          <button class="nav-item" data-section="facts" type="button">
+            <span>Extracted Facts</span>
+            <span class="nav-count tabular-nums" id="nav-count-facts">0</span>
+          </button>
+          <button class="nav-item" data-section="plan" type="button">Event Plan</button>
+          <button class="nav-item" data-section="conflicts" type="button">
+            <span>Conflict Resolution</span>
+            <span class="nav-count tabular-nums" id="nav-count-conflicts">0</span>
+          </button>
+          <button class="nav-item" data-section="impact" type="button">
+            <span>Impact Analysis</span>
+            <span class="nav-count tabular-nums" id="nav-count-impact">0</span>
+          </button>
+          <button class="nav-item" data-section="trace" type="button">
+            <span>Model Trace</span>
+            <span class="nav-count tabular-nums" id="nav-count-trace">0</span>
+          </button>
+          <button class="nav-item" data-section="validation" type="button">Validation Report</button>
+        </nav>
+
+        <div class="sidebar-exports">
+          <div class="sidebar-group-label">Exports</div>
+          <a class="export-link" href="/api/export/plan" download="planguard-event-plan.json">Download Event Plan</a>
+          <a class="export-link" href="/api/export/trace" download="planguard-model-trace.json">Download Model Trace</a>
+          <a class="export-link" href="/api/export/validation" download="planguard-validation-report.json">Download Validation Report</a>
+          <a class="export-link" href="/api/export/history" download="planguard-message-decision-history.json">Download Decision History</a>
+        </div>
+      </aside>
+
+      <div class="workspace-main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="mobile-menu-btn" id="mobile-menu-btn" type="button" aria-label="Toggle navigation">Menu</button>
+            <div class="breadcrumb" id="topbar-breadcrumb">
+              <span>Workspace</span>
+              <span class="sep" aria-hidden="true">/</span>
+              <span id="active-source-label">No message pack loaded</span>
+            </div>
+          </div>
+
+          <div class="topbar-right">
+            <select id="model-select" class="model-select" aria-label="Select small language model">
+              <option value="gemini:gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+              <option value="gemini:gemini-4-hydrogen">Gemini 4 Hydrogen</option>
+              <option value="local:qwen2.5:7b">Local model (Qwen 2.5 7B)</option>
+            </select>
+            <button id="topbar-upload-btn" class="btn btn-primary" type="button">Upload .txt Pack</button>
+          </div>
+        </header>
+
+        <div id="status-banner" class="status-banner hidden" role="status" aria-live="polite"></div>
+
+        <main class="content-viewport" id="content-viewport">
+          <!-- Sections are rendered dynamically by dashboard.js and trace.js -->
+          <section id="section-overview" class="view-section active"></section>
+          <section id="section-messages" class="view-section"></section>
+          <section id="section-facts" class="view-section"></section>
+          <section id="section-plan" class="view-section"></section>
+          <section id="section-conflicts" class="view-section"></section>
+          <section id="section-impact" class="view-section"></section>
+          <section id="section-trace" class="view-section"></section>
+          <section id="section-validation" class="view-section"></section>
+        </main>
+      </div>
+    </div>
+
+    <input type="file" id="hidden-file-input" accept=".txt,text/plain" class="sr-only" />
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

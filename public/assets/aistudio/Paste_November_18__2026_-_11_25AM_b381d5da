@@ -1,0 +1,988 @@
+# MASTER DEVELOPMENT PROMPT
+# PlanGUARD — Mind to Machine Hackathon 2026
+
+Act as a senior AI systems engineer, full-stack developer, software architect, and competitive hackathon mentor.
+
+Your task is to build a complete, working, hackathon-ready application called **PlanGUARD** for the Mind to Machine (MTM) Hackathon, taking place on 18 November 2026.
+
+Do not build a generic chatbot or a simple AI event planner.
+
+Build an intelligent, constraint-aware, incremental event-planning agent system that reads unstructured messages, understands context, identifies conflicts, rejects incorrect information, generates a valid event plan, and updates only the affected sections when new information arrives.
+
+The system must be designed specifically to maximize performance against the official judging criteria.
+
+---
+
+# 1. OFFICIAL PROBLEM STATEMENT
+
+The task is to build an agent system that reads a pack of approximately ten messages and plans a four-hour physical hackathon in Islamabad.
+
+The event has:
+
+- 150 students.
+- 50 teams.
+- A four-hour duration.
+- A fixed overall budget.
+- Multiple venue, scheduling, food, judging, and financial constraints.
+
+The system must generate a complete plan covering five areas:
+
+1. Venue.
+2. Schedule.
+3. Food.
+4. Judging.
+5. Budget.
+
+Every constraint stated in the messages must be respected, including constraints that do not appear in the initial sample pack.
+
+The message pack may contain:
+
+- Emails.
+- WhatsApp messages.
+- Notices.
+- English.
+- Roman Urdu.
+- Irrelevant information.
+- Outdated information.
+- Contradictory information.
+- Incorrect or misleading information.
+- New constraints and changing requirements.
+
+At the actual judging stage, the application will receive an unseen message pack with different numbers, wording, senders, and potentially unfamiliar types of constraints.
+
+Therefore, DO NOT build a solution that only works for the supplied sample messages.
+
+The system must generalize to unseen inputs.
+
+---
+
+# 2. TECHNOLOGY STACK
+
+Use the following technologies:
+
+Frontend:
+- HTML5.
+- CSS3.
+- Vanilla JavaScript.
+
+Backend:
+- Node.js.
+- Express.js.
+
+AI:
+- A configurable small language model.
+- API-based or locally hosted models.
+- A modular model integration layer.
+
+Storage:
+- JSON-based local persistence for the MVP.
+- Store messages, extracted facts, event plans, traces, and updates.
+
+Do NOT use:
+- React.
+- Next.js.
+- Vue.
+- Angular.
+- Unnecessary frontend frameworks.
+- Unnecessary databases.
+- Complicated infrastructure that delays the MVP.
+
+Keep the application modular, readable, efficient, and easy for a team of two beginner developers to understand.
+
+---
+
+# 3. CORE SYSTEM ARCHITECTURE
+
+Implement a HYBRID AI + DETERMINISTIC CODE architecture.
+
+Do not waste model calls on calculations that ordinary JavaScript can perform accurately.
+
+Use AI only where language understanding and contextual reasoning are necessary.
+
+## A. Message Reading Agent
+
+Responsibilities:
+
+- Read the complete message file.
+- Preserve the original messages.
+- Extract information from different message formats.
+- Understand English and Roman Urdu.
+- Identify relevant and irrelevant messages.
+- Extract dates, times, quantities, costs, restrictions, and conditions.
+- Identify sender identity and authority when available.
+
+Use structured JSON output.
+
+## B. Context and Fact Management Engine
+
+Maintain a structured internal representation of all extracted facts.
+
+Every fact should contain:
+
+- Unique fact ID.
+- Category.
+- Extracted information.
+- Original message ID.
+- Sender.
+- Timestamp.
+- Confidence.
+- Authority assessment.
+- Current status.
+- Related constraints.
+- Reason for acceptance or rejection.
+
+Possible statuses:
+
+- Confirmed.
+- Accepted.
+- Conflicting.
+- Superseded.
+- Outdated.
+- Unverified.
+- Rejected.
+- Irrelevant.
+
+Never silently delete conflicting information.
+
+Preserve the history of decisions.
+
+## C. Conflict Resolution Engine
+
+This is one of the most important components.
+
+The system must distinguish between:
+
+1. A genuine update.
+2. An outdated announcement.
+3. A contradiction.
+4. A misleading statement.
+5. An irrelevant message.
+6. An explicit correction.
+7. A new constraint.
+8. An unauthorized or unverified instruction.
+
+Evaluate messages using:
+
+- Source authority.
+- Explicit corrections.
+- Context.
+- Timestamps.
+- Consistency with established facts.
+- Hard constraints.
+- Supporting evidence.
+
+Do not assume that the latest message is automatically correct.
+
+Do not assume that every organizer-sounding message is authoritative without checking its source.
+
+When information cannot be confidently resolved, flag it for human verification.
+
+A rejected message must never silently change the event plan.
+
+## D. Five Planning Engines
+
+Implement five independently testable planning modules.
+
+### 1. Venue Engine
+
+Determine:
+
+- Required capacity.
+- Available venues.
+- Venue cost.
+- Capacity restrictions.
+- Generator requirements.
+- Other stated venue conditions.
+
+Select a valid venue based on all established constraints.
+
+Do not select a venue simply because it is the cheapest.
+
+### 2. Schedule Engine
+
+Generate a valid four-hour schedule.
+
+Respect:
+
+- Event start time.
+- Event end time.
+- Build duration.
+- Code freeze.
+- Prayer breaks.
+- Judging duration.
+- Other timing restrictions.
+
+Check for overlapping activities and invalid time allocations.
+
+Never create a schedule that violates an explicit timing constraint.
+
+### 3. Food Engine
+
+Determine:
+
+- Number of people requiring food.
+- Applicable food prices.
+- Delivery charges.
+- Food quantity.
+- Budget allocation.
+- Any dietary or other food restrictions.
+
+Do not confuse the number of teams with the number of people.
+
+Do not accept arbitrary quantity reductions if they violate the required attendance or food coverage.
+
+### 4. Judging Engine
+
+Calculate:
+
+- Number of teams.
+- Available judges.
+- Maximum teams per judge.
+- Time required per team.
+- Total judging capacity.
+- Judging schedule.
+
+Ensure that every team can be evaluated under the given constraints.
+
+Use deterministic arithmetic to validate judge allocation.
+
+### 5. Budget Engine
+
+Calculate:
+
+- Venue costs.
+- Food costs.
+- Judge honorariums.
+- Prizes.
+- Printing.
+- Internet.
+- Other approved expenses.
+- Remaining budget.
+
+Maintain a complete expense ledger.
+
+Ensure:
+
+TOTAL EXPENSES <= APPROVED BUDGET.
+
+Do not count the same expense twice.
+
+Do not silently discard previously committed expenses.
+
+Use JavaScript for all arithmetic and financial validation.
+
+---
+
+# 4. MESSAGE FILE INGESTION
+
+This requirement is mandatory.
+
+The application must read every message from a text file exactly as given.
+
+The actual sample pack will be supplied as a `.txt` file.
+
+Implement:
+
+- File upload through the web interface.
+- Backend file reading.
+- Parsing of message boundaries.
+- Preservation of original message text.
+- Sender and timestamp extraction.
+- Handling of different message formats.
+- Support for English and Roman Urdu.
+- Support for unknown or inconsistent formatting.
+
+IMPORTANT:
+
+Do not manually type sample-pack facts into source code.
+
+Do not hardcode:
+
+- Budget figures.
+- Venue capacities.
+- Venue prices.
+- Food prices.
+- Judge numbers.
+- Number of students.
+- Number of teams.
+- Message content.
+- Event constraints.
+
+All such information must come from the uploaded message pack.
+
+The application must work with an unseen text file containing different facts.
+
+Create a generic parser that can handle messages separated by numbering, headers, blank lines, or other reasonable formatting patterns.
+
+If parsing is uncertain, flag the message rather than silently ignoring it.
+
+---
+
+# 5. UNIFORM MESSAGE PROCESSING
+
+Every message must enter through the same processing mechanism.
+
+The application must support one consistent command for initial runs and incremental updates.
+
+Do not require the user to manually classify messages or provide flags indicating whether a message is correct, incorrect, outdated, or a change.
+
+The system must make these decisions itself.
+
+Support:
+
+- Initial processing of the full text file.
+- Adding a new message after the initial run.
+- Reprocessing the affected context.
+- Updating the existing plan.
+- Saving the new plan and trace.
+
+The same core ingestion and reasoning pipeline must handle all messages.
+
+---
+
+# 6. INCREMENTAL UPDATE ENGINE
+
+This feature is essential for the hackathon.
+
+After the initial plan is generated, the system must accept new messages one at a time.
+
+For every new message:
+
+1. Read the message.
+2. Extract relevant facts.
+3. Compare them with the existing fact store.
+4. Identify whether the message changes an existing decision.
+5. Determine which planning areas are affected.
+6. Call models only for the affected areas.
+7. Recalculate dependent values using JavaScript.
+8. Validate the complete event plan.
+9. Save the updated plan.
+10. Record the entire process in the trace.
+
+IMPORTANT:
+
+Do not regenerate all five planning areas after every new message.
+
+Only affected areas should make model calls.
+
+For example:
+
+If the printing expense changes:
+- Update the budget.
+- Recalculate remaining funds.
+- Do not call the venue, schedule, food, or judging models unless an actual dependency requires it.
+
+If the venue changes:
+- Reconsider venue-dependent arrangements.
+- Recalculate affected budget values.
+- Check any schedule or food implications.
+- Do not unnecessarily regenerate unrelated information.
+
+Maintain a dependency graph between facts and planning areas.
+
+Use this graph to determine which areas need updating.
+
+The complete update must use no more than FIVE model calls.
+
+The complete update must finish within ONE MINUTE.
+
+---
+
+# 7. MODEL-CALL TRACE SYSTEM
+
+This is a mandatory judging requirement.
+
+Every model call must be recorded.
+
+Each trace entry must contain:
+
+1. Sequential call number.
+2. Actual model name.
+3. Area tag.
+4. Exact input sent to the model.
+5. Exact output received from the model.
+6. Input token count reported by the model or provider.
+7. Output token count reported by the model or provider.
+8. Total tokens for that call.
+9. Timestamp.
+10. Purpose of the call.
+
+Allowed area tags:
+
+- reading
+- venue
+- schedule
+- food
+- judging
+- budget
+
+Use one area tag per model call.
+
+Do not invent token counts.
+
+Use actual token usage metadata from the model provider wherever available.
+
+If the provider does not expose token usage, explicitly mark it unavailable instead of fabricating a number.
+
+At the end of the trace, display:
+
+- Total model calls.
+- Total input tokens.
+- Total output tokens.
+- Total tokens.
+- Model names used.
+- Calls grouped by area.
+
+The trace must be downloadable as a file.
+
+The exact inputs and outputs must be preserved for auditing.
+
+Rejected messages and conflict-resolution explanations must also appear in the trace.
+
+IMPORTANT:
+
+The trace must represent actual model calls, not simulated or manually constructed calls.
+
+Use a centralized model-call wrapper so that no AI call can occur without being logged.
+
+---
+
+# 8. SMALL LANGUAGE MODEL RESEARCH
+
+The development team is responsible for researching and creating its own small-model list.
+
+Do not assume that the organizers will provide the list.
+
+Research candidate models that can run locally or through an API.
+
+Evaluate candidates based on:
+
+- Context understanding.
+- Multilingual capabilities.
+- Roman Urdu interpretation.
+- Conflict resolution.
+- Structured JSON generation.
+- Inference speed.
+- Token efficiency.
+- Reliability.
+
+Make model selection configurable.
+
+Create a model comparison document or module.
+
+Do not fabricate experimental results.
+
+Clearly distinguish published benchmarks from our own tests.
+
+IMPORTANT:
+
+The official bonus awards 10 additional points if every model call uses a model on the organizers' eligible small-model list, including models running on our own laptops, and the final plan passes every check.
+
+Before claiming bonus eligibility, verify the selected model against the organizers' actual definition and rules.
+
+Do not assume that every small model automatically qualifies.
+
+---
+
+# 9. SPECIAL CODE-FREEZE CLARIFICATION
+
+There is a discrepancy between the written hackathon document and a subsequent organizer announcement.
+
+Written document:
+
+"Code freeze: 1:25 PM. Push your code and submit your repository link and commit hash. No changes after this."
+
+Organizer announcement:
+
+"The code freeze is at 2:00 PM. Please consider it as 1:50 PM."
+
+Expected interpretation:
+
+- Original written time: 1:25 PM.
+- Announced time: 2:00 PM.
+- Explicitly clarified operational time: 1:50 PM.
+
+The system must distinguish the announced time from the instructed operational time.
+
+Assuming the clarification is authentic and issued by an authorized organizer:
+
+- Set the operational code-freeze time to 1:50 PM.
+- Preserve 1:25 PM as superseded information.
+- Preserve the original 2:00 PM announcement.
+- Explain why 1:50 PM is the applicable deadline.
+- Record the decision in the trace.
+
+IMPORTANT:
+
+This is a hackathon administrative deadline, not a fourth-hour event schedule constraint.
+
+Do not mix it into the event's four-hour timetable.
+
+If this clarification is supplied as an additional message, process it through the same message-ingestion pipeline.
+
+If it is provided separately by an organizer, record its provenance as an external authoritative clarification rather than pretending it came from the original text file.
+
+---
+
+# 10. VALIDATION ENGINE
+
+The final event plan must be validated before being presented.
+
+Implement deterministic checks for all five planning areas.
+
+### Venue checks
+- Does the selected venue have sufficient capacity?
+- Does it satisfy all venue-specific constraints?
+- Is the venue cost included?
+
+### Schedule checks
+- Is the event exactly four hours?
+- Are all activities within the permitted duration?
+- Are prayer breaks respected?
+- Are there any overlapping activities?
+- Are all timing constraints satisfied?
+
+### Food checks
+- Is there sufficient food for everyone?
+- Are the correct prices applied?
+- Are all delivery charges included?
+- Is the quantity consistent with attendance?
+
+### Judging checks
+- Can every team be judged?
+- Is the number of judges sufficient?
+- Is the maximum team allocation respected?
+- Is the available judging time sufficient?
+
+### Budget checks
+- Are all expenses included?
+- Are committed expenses preserved?
+- Is the total within budget?
+- Is the remaining balance correct?
+
+Create a validation report showing:
+
+- Passed checks.
+- Failed checks.
+- Warnings.
+- Unresolved constraints.
+- Reasons for failure.
+
+Never label an invalid plan as valid.
+
+If a plan is impossible under the supplied constraints, explain which constraints make it impossible rather than inventing a solution.
+
+---
+
+# 11. HACKATHON DEMONSTRATION AND TESTING
+
+Build against the eight official sample messages.
+
+The system must not hardcode these messages or their facts.
+
+Use the actual supplied text file as input.
+
+Test the application against these two practice messages as well.
+
+### Practice Message 1: Genuine change
+
+"Finance here. The printing bill came in at Rs 15,000, not Rs 10,000."
+
+Expected behavior:
+
+- Recognize the expense update.
+- Replace the previous printing amount.
+- Recalculate the budget.
+- Preserve the other planning areas.
+- Record the reason for the update.
+
+### Practice Message 2: Plausible but incorrect message
+
+"Caterer: I have rounded your order down to 100 boxes to keep the cost low."
+
+The event has 177 people to feed.
+
+Expected behavior:
+
+- Recognize that 100 boxes do not satisfy the food requirement.
+- Reject the insufficient quantity.
+- Preserve the valid food quantity.
+- Explain the rejection in the trace.
+- Keep the overall plan valid.
+
+Also create additional synthetic tests with:
+
+- New venue restrictions.
+- Budget reductions.
+- Changes in attendance.
+- New prayer-break requirements.
+- Different food prices.
+- Judge availability changes.
+- Unfamiliar message formats.
+- Roman Urdu corrections.
+- Conflicting deadlines.
+- Irrelevant promotional messages.
+
+These tests should demonstrate generalization rather than memorization.
+
+---
+
+# 12. USER INTERFACE
+
+Create a premium, professional, modern SaaS-style dashboard.
+
+Product name: PlanGUARD.
+
+Design direction:
+
+- Dark navy background.
+- Emerald green accents.
+- Warm white typography.
+- Subtle gradients.
+- Clean spacing.
+- Professional cards.
+- Responsive layout.
+- Minimal and purposeful animations.
+
+Avoid an overly complicated dashboard.
+
+### Main sections
+
+1. Overview.
+2. Message Pack.
+3. Extracted Facts.
+4. Event Plan.
+5. Conflict Resolution.
+6. Impact Analysis.
+7. Model Trace.
+8. Validation Report.
+
+### Dashboard overview
+
+Display:
+
+- Total messages processed.
+- Accepted messages.
+- Rejected messages.
+- Conflicting messages.
+- Current event budget.
+- Remaining budget.
+- Selected venue.
+- Food coverage.
+- Judging capacity.
+- Overall plan validity.
+
+### Message interface
+
+Allow users to:
+
+- Upload a `.txt` file.
+- View original messages.
+- Add a new message.
+- See message processing status.
+- Inspect why a message was accepted or rejected.
+
+### Event plan interface
+
+Display the five planning areas in separate sections.
+
+Make changes and updated information visually identifiable.
+
+### Conflict resolution interface
+
+Show:
+
+- Original information.
+- Conflicting information.
+- Selected information.
+- Source.
+- Reason for the decision.
+- Final status.
+
+### Trace interface
+
+Provide:
+
+- Numbered model calls.
+- Model names.
+- Area tags.
+- Actual inputs.
+- Actual outputs.
+- Token counts.
+- Total token usage.
+- Rejected message explanations.
+
+Allow users to expand individual calls.
+
+### Export functionality
+
+Allow downloading:
+
+- Final event plan.
+- Complete model trace.
+- Validation report.
+- Updated message and decision history.
+
+The UI must be functional, not just decorative.
+
+Every button must perform its advertised action.
+
+---
+
+# 13. STRICT PERFORMANCE LIMITS
+
+Official limits:
+
+FULL RUN:
+- Maximum execution time: 2 minutes.
+
+INCREMENTAL UPDATE:
+- Maximum execution time: 1 minute.
+- Maximum model calls: 5.
+
+Optimize for:
+
+- Fewer model calls.
+- Lower token usage.
+- Efficient prompts.
+- Compact structured context.
+- Deterministic calculations.
+- Reusing previously extracted facts.
+- Avoiding unnecessary regeneration.
+
+Do not send the complete message history to the model repeatedly.
+
+Maintain a compact state representation and send only relevant context.
+
+Do not create unnecessary agents merely to make the architecture look sophisticated.
+
+Every component must have a clear and explainable purpose.
+
+---
+
+# 14. GIT AND DEVELOPMENT WORKFLOW
+
+We are a team of two working under a strict hackathon deadline.
+
+We need meaningful GitHub commits approximately every 30 minutes.
+
+Create a Git-ready project with:
+
+- Proper folder organization.
+- README.md.
+- .gitignore.
+- .env.example.
+- Clear setup instructions.
+- Meaningful commit-sized milestones.
+
+Never include real API keys in GitHub.
+
+Keep the application runnable after every major development milestone.
+
+Do not postpone Git integration until the end.
+
+Prioritize functional implementation over unnecessary visual or architectural complexity.
+
+---
+
+# 15. RECOMMENDED PROJECT STRUCTURE
+
+Create a clean structure similar to:
+
+planguard/
+│
+├── public/
+│   ├── index.html
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── app.js
+│   │   ├── dashboard.js
+│   │   └── trace.js
+│
+├── src/
+│   ├── server.js
+│   ├── routes/
+│   │   ├── messageRoutes.js
+│   │   └── planRoutes.js
+│   │
+│   ├── ai/
+│   │   ├── modelProvider.js
+│   │   ├── modelWrapper.js
+│   │   └── prompts.js
+│   │
+│   ├── processing/
+│   │   ├── fileReader.js
+│   │   ├── messageParser.js
+│   │   ├── factExtractor.js
+│   │   ├── conflictResolver.js
+│   │   └── contextManager.js
+│   │
+│   ├── planners/
+│   │   ├── venuePlanner.js
+│   │   ├── schedulePlanner.js
+│   │   ├── foodPlanner.js
+│   │   ├── judgingPlanner.js
+│   │   └── budgetPlanner.js
+│   │
+│   ├── validation/
+│   │   └── planValidator.js
+│   │
+│   ├── updates/
+│   │   ├── dependencyEngine.js
+│   │   └── updateManager.js
+│   │
+│   ├── trace/
+│   │   └── traceManager.js
+│   │
+│   └── storage/
+│       └── dataStore.js
+│
+├── data/
+│   ├── messages/
+│   ├── plans/
+│   └── traces/
+│
+├── .env.example
+├── .gitignore
+├── package.json
+└── README.md
+
+You may adjust the structure if there is a technically justified reason.
+
+Do not create empty modules or unnecessary files just to match this structure.
+
+---
+
+# 16. DEVELOPMENT EXECUTION PLAN
+
+Do not attempt to generate an enormous amount of code without testing it.
+
+Build incrementally.
+
+### Phase 1: Foundation
+
+- Create the project.
+- Configure Node.js and Express.
+- Create the frontend.
+- Verify local execution.
+- Set up Git.
+
+### Phase 2: Message ingestion
+
+- Implement `.txt` file upload.
+- Read and preserve messages.
+- Parse different message formats.
+- Test with the official sample pack.
+
+### Phase 3: AI integration
+
+- Configure the model provider.
+- Implement the centralized model-call wrapper.
+- Implement structured message extraction.
+- Implement conflict analysis.
+- Implement token tracking.
+
+### Phase 4: Planning engines
+
+- Build the five planning modules.
+- Implement deterministic calculations.
+- Implement validation.
+
+### Phase 5: Incremental updates
+
+- Implement the dependency engine.
+- Implement affected-area detection.
+- Implement the five-call update limit.
+- Implement plan revision.
+
+### Phase 6: Trace and UI
+
+- Display the plan.
+- Display conflicts.
+- Display rejected messages.
+- Display complete trace.
+- Implement downloads.
+
+### Phase 7: Testing
+
+- Test the official sample pack.
+- Test both practice messages.
+- Test unseen synthetic message packs.
+- Verify the two-minute limit.
+- Verify the one-minute update limit.
+- Verify token reporting.
+- Verify Git repository cleanliness.
+
+---
+
+# 17. OFFICIAL JUDGING CRITERIA
+
+Optimize the entire implementation for the following score distribution.
+
+| Component | Points |
+|---|---:|
+| Correct final event plan | 30 |
+| Catching the incorrect message | 20 |
+| Understanding and context | 20 |
+| Handling changes | 10 |
+| User interface | 10 |
+| Predicting affected areas | 5 |
+| Token efficiency | 5 |
+| TOTAL | 100 |
+
+Additional bonus:
+
+10 points for using eligible small models for every model call while passing every plan validation check.
+
+Prioritize the following:
+
+1. A valid final plan.
+2. Correct rejection of misleading messages.
+3. Explainable conflict resolution.
+4. Accurate incremental updates.
+5. Reliable and honest token traces.
+6. Low token consumption.
+7. Clear and professional UI.
+
+The architecture must be simple enough that every team member can explain what each module does and what would break without it.
+
+---
+
+# 18. FINAL INSTRUCTIONS TO GOOGLE AI STUDIO
+
+Before implementation:
+
+1. Explain the proposed architecture briefly.
+2. Identify the most technically challenging requirements.
+3. Show the project structure.
+4. Explain the AI model integration.
+5. Identify the first runnable milestone.
+
+Then immediately begin creating the actual application.
+
+Do not stop after providing an architecture or a plan.
+
+Generate actual working code.
+
+Do not produce pseudocode in place of functionality.
+
+Do not hardcode the sample-pack facts.
+
+Do not simulate AI calls.
+
+Do not fabricate model names, outputs, or token counts.
+
+Do not create a generic chatbot.
+
+Do not regenerate unaffected planning areas.
+
+Do not ignore constraints that are unfamiliar or absent from the sample pack.
+
+If a feature cannot be implemented reliably within the time constraints, explain the limitation and prioritize a working alternative.
+
+**FINAL OBJECTIVE:**
+
+Build PlanGUARD as a fast, intelligent, explainable, constraint-aware event-planning agent system that can process an unseen message pack, produce a mathematically valid four-hour hackathon plan, identify and reject misleading information, maintain a truthful model-call trace, and update only affected areas when new messages arrive.
+
+The system must be demonstrably functional, technically defensible, and ready for live judging.

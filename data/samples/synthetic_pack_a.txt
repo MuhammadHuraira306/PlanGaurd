@@ -1,0 +1,45 @@
+# Synthetic Benchmark Pack A — MTM Islamabad Format (English + Roman Urdu + Conflicts)
+
+[Message 1]
+From: Lead Organizer <director@mtm-islamabad.org>
+Date: Nov 17, 2026 09:00 AM
+Subject: Mind to Machine Hackathon Core Specs
+We are hosting a 4-hour physical hackathon in Islamabad tomorrow (18 Nov 2026) from 10:00 AM to 2:00 PM.
+Confirmed participation: 150 students forming 50 teams, 5 judges, 12 organizers, and 10 volunteers.
+Approved total event budget is PKR 250,000.
+
+[Message 2]
+[09:20 AM, 11/17/2026] Venue Coordinator: Three Islamabad venue options received:
+Option A: Margalla Mini Room - capacity 140 people, rent Rs 30,000, has AC and Wi-Fi, NO backup generator.
+Option B: NSTP Innovation Auditorium - capacity 220 people, rent Rs 55,000, backup generator included, AC + dedicated fiber Wi-Fi.
+Option C: Sector F-8 Hall - capacity 180 people, rent Rs 42,000, AC included, no backup generator.
+
+[Message 3]
+From: Technical Ops Lead <ops@mtm-islamabad.org>
+Date: Nov 17, 2026 10:15 AM
+Note on venue: Islamabad load-shedding schedule shows an outage window tomorrow. Backup generator is mandatory — koi bhi venue bina generator ke nahi chalega.
+
+[Message 4]
+[10:40 AM, 11/17/2026] Catering Desk: Quote from Islamabad Biryani House: Rs 650 per meal box, flat Rs 2,500 delivery charge. Every attendee (students, judges, organizers, volunteers) must receive a meal box.
+
+[Message 5]
+[11:05 AM, 11/17/2026] Judging Chair: We have 5 confirmed judges. Each judge can evaluate a maximum of 10 teams, at 5 minutes per team, running in 5 parallel tracks. Judge honorarium is Rs 4,000 per judge.
+
+[Message 6]
+From: Finance Head <finance@mtm-islamabad.org>
+Date: Nov 17, 2026 11:30 AM
+Committed expenses approved so far:
+- Prizes pool: Rs 50,000
+- Printing & standees: Rs 10,000
+- Backup 4G internet routers: Rs 8,000
+
+[Message 7]
+[12:00 PM, 11/17/2026] Random Student Forward: Yaar suna hai pizza free sponsor kar raha hai ek startup aur event 6 ghante ka ho gaya hai F-8 mein! (unverified chat)
+
+[Message 8]
+[12:30 PM, 11/17/2026] Promo Bot: Flash Deal! 40% off ergonomic gaming chairs and LED strips for your study desk! Visit our website today!
+
+[Message 9]
+From: Lead Organizer <director@mtm-islamabad.org>
+Date: Nov 17, 2026 01:00 PM
+Schedule update: Include a mandatory 20-minute Zuhr prayer break inside the 4-hour schedule. Also, written handbook listed Code Freeze at 1:25 PM, and main stage banner says 2:00 PM. Clarification: The code freeze is at 2:00 PM. Please consider it as 1:50 PM for repo submission cutoff.
